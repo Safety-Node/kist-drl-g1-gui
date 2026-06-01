@@ -37,6 +37,19 @@
   window.addEventListener("resize", resize);
   resize();
 
+  // Click / tap toggles fullscreen (Fullscreen API requires a user gesture,
+  // so auto-fullscreen on load is not possible; for the wall display launch
+  // the browser in kiosk mode instead). Esc exits, as usual.
+  canvas.addEventListener("click", function () {
+    if (document.fullscreenElement) {
+      if (document.exitFullscreen) document.exitFullscreen();
+    } else {
+      var el = document.documentElement;
+      var req = el.requestFullscreen || el.webkitRequestFullscreen;
+      if (req) req.call(el);
+    }
+  });
+
   // ---- WebSocket with exponential-backoff reconnect ----
   var backoff = 500;
   function connect() {
