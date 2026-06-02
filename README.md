@@ -28,9 +28,9 @@ python tools/mock_publisher.py        # fake publisher on ws://localhost:8081
 # then: python3 -m http.server 8080  and open  http://localhost:8080/?ws=ws://localhost:8081
 ```
 
-You should see a moving blob (mock camera), the `move_test` overlay, a periodic
-E-STOP banner, and a TTS "말하는 중" blink — and the renderer should
-auto-reconnect if you stop/restart the mock.
+You should see a moving blob (mock camera), the `move_test` overlay, and a
+periodic E-STOP banner — and the renderer should auto-reconnect if you
+stop/restart the mock.
 
 ## WebSocket message contract
 
@@ -45,15 +45,14 @@ server sends two messages to each connected client:
     "scenario": "move_test",
     "subtask": { "name": "go_fridge", "i": 1, "n": 4 },
     "state": "active",
-    "estop": false,
-    "stt": "STREAMING",
-    "tts": false
+    "estop": false
   }
   ```
 
   - `state` ∈ `idle | active | success | failed`
   - `subtask.i` is **0-based** (the renderer displays `i+1/n`)
   - `subtask` is `null` when idle
+  - `estop` is `bool | null` (`null` = sensor not yet wired — fail-safe unknown)
 
 The renderer keeps the latest frame and latest status independently and redraws
 on each animation frame.
