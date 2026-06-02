@@ -59,8 +59,6 @@ async def _pump():
             "subtask": {"name": "go_fridge", "i": 1, "n": 4},
             "state": states[(i // 30) % len(states)],
             "estop": (i % 200) > 185,
-            "stt": "STREAMING",
-            "tts": (i % 60) < 18,
         }
         text = json.dumps(status, ensure_ascii=False)
         frame = _make_jpeg(i)

@@ -2,7 +2,7 @@
 //
 // Consumes the workstation GUIBackground WebSocket (REQ-41 / kist-drl-g1-workstation):
 //   - binary message : latest camera JPEG bytes
-//   - text message   : status JSON { scenario, subtask:{name,i,n}, state, estop, stt, tts }
+//   - text message   : status JSON { scenario, subtask:{name,i,n}, state, estop }
 // Keeps the latest frame + latest status independently and redraws on each
 // animation frame. ROS-free. Auto-reconnects with exponential backoff.
 
@@ -163,24 +163,6 @@
     }
     var state = s.state || "idle";
     badge(state.toUpperCase(), pad, y, STATE_COLOR[state] || "#888888");
-
-    // top-right: STT / TTS indicators
-    var ry = pad + 26;
-    if (s.stt) {
-      panel("STT " + s.stt, W - pad, ry, "right", "20px system-ui, sans-serif");
-      ry += 36;
-    }
-    if (s.tts) {
-      var on = Math.floor(performance.now() / 400) % 2 === 0;
-      panel(
-        "TTS " + (on ? "●" : "○") + " 말하는 중",
-        W - pad,
-        ry,
-        "right",
-        "20px system-ui, sans-serif",
-        "#ffd24d"
-      );
-    }
 
     // E-STOP banner (overrides everything visually)
     if (s.estop) {
