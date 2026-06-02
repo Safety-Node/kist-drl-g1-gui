@@ -2,7 +2,7 @@
 //
 // Consumes the workstation GUIBackground WebSocket (REQ-41 / kist-drl-g1-workstation):
 //   - binary message : latest camera JPEG bytes
-//   - text message   : status JSON { scenario, subtask:{name,i,n}, state, estop }
+//   - text message   : status JSON { scenario, subtask:{name,i,n}, state }
 // Keeps the latest frame + latest status independently and redraws on each
 // animation frame. ROS-free. Auto-reconnects with exponential backoff.
 
@@ -145,9 +145,7 @@
   }
 
   function drawOverlay(s) {
-    var W = cssW(),
-      H = cssH(),
-      pad = 24;
+    var pad = 24;
 
     // top-left: scenario + sub-task + state badge
     var y = pad + 28;
@@ -163,21 +161,6 @@
     }
     var state = s.state || "idle";
     badge(state.toUpperCase(), pad, y, STATE_COLOR[state] || "#888888");
-
-    // E-STOP banner (overrides everything visually)
-    if (s.estop) {
-      ctx.strokeStyle = "#e74c3c";
-      ctx.lineWidth = 14;
-      ctx.strokeRect(7, 7, W - 14, H - 14);
-      ctx.font = "bold 64px system-ui, sans-serif";
-      var t = "E-STOP";
-      var m = ctx.measureText(t);
-      ctx.fillStyle = "rgba(0,0,0,0.6)";
-      ctx.fillRect(W / 2 - m.width / 2 - 24, H / 2 - 50, m.width + 48, 88);
-      ctx.fillStyle = "#ff5a4d";
-      ctx.textAlign = "center";
-      ctx.fillText(t, W / 2, H / 2 + 16);
-    }
   }
 
   function drawConn() {
